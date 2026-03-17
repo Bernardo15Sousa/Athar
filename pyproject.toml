@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "athar"
+version = "0.1.0"
+description = "Windows DFIR artefact correlation engine — Every file leaves a trace."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Bernardo Sousa" }]
+keywords = ["dfir", "forensics", "windows", "triage", "incident-response"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: System :: Logging",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "click>=8.1",
+    "python-evtx>=0.8.0",
+    "Jinja2>=3.1",
+    "python-dateutil>=2.9",
+    "colorama>=0.4",
+    "rich>=13.0",
+]
+
+[project.optional-dependencies]
+libscca = ["python-libscca>=20240216"]
+dev = ["pytest>=8.0", "pytest-cov>=4.0"]
+
+[project.scripts]
+athar = "athar.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/bernardosousa/athar"
+Repository = "https://github.com/bernardosousa/athar"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["athar*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
