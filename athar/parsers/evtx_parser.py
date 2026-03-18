@@ -37,6 +37,19 @@ from __future__ import annotations
 import logging
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
+
+# Use defusedxml to prevent XXE and billion-laughs attacks when parsing
+# untrusted EVTX XML. Falls back to stdlib with a warning if not installed.
+try:
+    import defusedxml.ElementTree as _safe_ET  # type: ignore
+    _parse_xml_string = _safe_ET.fromstring
+except ImportError:  # pragma: no cover
+    log_startup = logging.getLogger(__name__)
+    log_startup.warning(
+        "defusedxml is not installed. XML parsing may be vulnerable to XXE "
+        "attacks. Install it with: pip install defusedxml"
+    )
+    _parse_xml_string = ET.fromstring
 from pathlib import Path
 from typing import Optional
 
@@ -97,7 +110,7 @@ def _parse_event_xml(xml_string: str) -> Optional[ET.Element]:
     Returns None on parse failure.
     """
     try:
-        return ET.fromstring(xml_string)
+        return _parse_xml_string(xml_string)
     except ET.ParseError as exc:
         log.debug("XML parse error: %s", exc)
         return None
@@ -285,7 +298,7 @@ def parse_evtx_file(
             for record in log_file.records():
                 try:
                     xml_str = record.xml()
-                except Exception as exc:  # noqa: BLE001
+                except (OSError, ValueError, RuntimeError, UnicodeDecodeError) as exc:
                     log.debug("Failed to get XML for record in %s: %s", path.name, exc)
                     continue
 
@@ -343,7 +356,7 @@ def parse_evtx_file(
 
     except FileNotFoundError:
         raise
-    except Exception as exc:  # noqa: BLE001
+    except (OSError, ValueError, RuntimeError, UnicodeDecodeError) as exc:
         log.warning("Failed to parse EVTX file %s: %s", path, exc)
 
     return records

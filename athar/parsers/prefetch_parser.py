@@ -125,12 +125,25 @@ def _decompress_mam(data: bytes) -> Optional[bytes]:
     try:
         # Windows-only: use RtlDecompressBufferEx via ctypes
         import ctypes
-        import ctypes.wintypes as wt
+        import os
 
-        ntdll = ctypes.WinDLL("ntdll.dll")
+        # Use absolute path to prevent DLL hijacking via manipulated search path
+        windir = os.environ.get("WINDIR", r"C:\Windows")
+        ntdll_path = os.path.join(windir, "System32", "ntdll.dll")
+        ntdll = ctypes.WinDLL(ntdll_path)
 
         # Read uncompressed size from header (offset 4, DWORD)
         uncompressed_size = struct.unpack_from("<I", data, 4)[0]
+
+        # Guard against maliciously crafted headers claiming huge sizes (DoS)
+        _MAX_UNCOMPRESSED = 50 * 1024 * 1024  # 50 MB
+        if uncompressed_size > _MAX_UNCOMPRESSED:
+            log.warning(
+                "Prefetch claims unreasonable uncompressed size (%d bytes) — skipping",
+                uncompressed_size,
+            )
+            return None
+
         uncompressed = (ctypes.c_ubyte * uncompressed_size)()
         final_size = ctypes.c_ulong(0)
         workspace = (ctypes.c_ubyte * (uncompressed_size * 2))()
@@ -519,7 +532,7 @@ def parse_prefetch_directory(
             all_records.extend(file_records)
         except FileNotFoundError:
             log.warning("Prefetch file disappeared: %s", pf_path)
-        except Exception as exc:  # noqa: BLE001
+        except (OSError, struct.error, ValueError, UnicodeDecodeError) as exc:
             log.warning("Unexpected error parsing %s: %s", pf_path.name, exc)
 
     all_records.sort(key=lambda r: r.timestamp)
