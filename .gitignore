@@ -1,0 +1,31 @@
+# macOS
+.DS_Store
+
+# Python build artefacts
+*.egg-info/
+__pycache__/
+*.pyc
+*.pyo
+build/
+dist/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Editor
+.vscode/
+.idea/
+
+# Athar working files
+STATUS.md
+athar_output/
+
+# Claude Code
+CLAUDE.md

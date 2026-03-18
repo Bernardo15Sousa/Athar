@@ -1,0 +1,17 @@
+# Athar — core runtime dependencies
+# Install with: pip install -r requirements.txt
+# Or: pip install -e ".[dev]"
+
+click>=8.1
+python-evtx>=0.8.0
+Jinja2>=3.1
+python-dateutil>=2.9
+colorama>=0.4
+rich>=13.0
+
+# Optional — accelerates Prefetch parsing on platforms where libscca is available
+# python-libscca>=20240216
+
+# Development / testing
+# pytest>=8.0
+# pytest-cov>=4.0
