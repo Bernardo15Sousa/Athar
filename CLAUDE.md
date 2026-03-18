@@ -7,7 +7,11 @@ One tool. Does one thing. Does it exceptionally well.
 Identity
 Name        : Athar Author      : Bernardo Sousa Version     : 0.1.0 Python      : 3.10+ Platform    : Windows, Linux, macOS License     : MIT Tagline     : Every file leaves a trace. Athar finds it. 
 ASCII banner for CLI (print on startup):
-  ████████╗ ██████╗  ██████╗ ██╗      ███╗   ██╗ █████╗ ███╗   ███╗███████╗   ╚══██╔══╝██╔═══██╗██╔═══██╗██║      ████╗  ██║██╔══██╗████╗ ████║██╔════╝      ██║   ██║   ██║██║   ██║██║      ██╔██╗ ██║███████║██╔████╔██║█████╗      ██║   ██║   ██║██║   ██║██║      ██║╚██╗██║██╔══██║██║╚██╔╝██║██╔══╝      ██║   ╚██████╔╝╚██████╔╝███████╗ ██║ ╚████║██║  ██║██║ ╚═╝ ██║███████╗      ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝   Athar v0.1.0 — by Bernardo Sousa  |  Windows DFIR Artefact Correlation 
+    ___            __
+ /\   |  |__|  /\  |__)
+/~~\  |  |  | /~~\ |  \
+
+Athar v0.1.0 — by Bernardo Sousa  |  Windows DFIR Artefact Correlation
 Replace placeholder with actual tool name when defined. For now use Athar.
 Project Structure
 athar/ ├── __init__.py ├── cli.py                        # Click CLI entry point + ASCII banner ├── config.py                     # Constants, LOLBins list, default Event IDs ├── models/ │   ├── __init__.py │   ├── base.py                   # BaseRecord, CorrelatedEvent dataclasses │   ├── prefetch.py               # PrefetchRecord │   ├── mft.py                    # MFTRecord │   ├── usn.py                    # USNRecord │   └── evtx.py                   # EventLogRecord ├── parsers/ │   ├── __init__.py │   ├── prefetch_parser.py │   ├── mft_parser.py │   ├── usn_parser.py             # Pure binary parser, no external lib │   └── evtx_parser.py ├── correlation/ │   ├── __init__.py │   ├── engine.py                 # Timeline merge + deduplication │   ├── rules.py                  # Correlation rule functions │   └── enrichment.py            # Path normalisation, LOLBin tagging ├── output/ │   ├── __init__.py │   ├── json_exporter.py │   ├── csv_exporter.py │   └── html_reporter.py         # Jinja2 renderer ├── templates/ │   └── report.html.j2 ├── tests/ │   ├── fixtures/                 # Binary fixture files for unit tests │   ├── test_prefetch.py │   ├── test_mft.py │   ├── test_usn.py │   ├── test_evtx.py │   └── test_correlation.py ├── pyproject.toml ├── requirements.txt └── README.md 
